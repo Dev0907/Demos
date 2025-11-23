@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduMind Agent | AI Teacher & Student Assistant</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/chat.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar / Navigation -->
+        <nav class="sidebar">
+            <div class="logo">
+                <i data-lucide="brain-circuit"></i>
+                <span>EduMind</span>
+            </div>
+            <div class="nav-links">
+                <button class="nav-item active" onclick="switchMode('teacher')">
+                    <i data-lucide="graduation-cap"></i> Teacher Mode
+                </button>
+                <button class="nav-item" onclick="switchMode('student')">
+                    <i data-lucide="user"></i> Student Mode
+                </button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-bar">
+                <h1>Welcome to EduMind</h1>
+                <p class="subtitle">AI-powered autonomous learning & assessment engine</p>
+            </header>
+
+            <!-- Teacher Mode View -->
+            <div id="teacher-mode" class="mode-view active">
+                <div class="card upload-card">
+                    <h2><i data-lucide="file-up"></i> Upload Study Material</h2>
+                    <p>Upload NCERT chapters or reference PDFs to generate worksheets.</p>
+                    <div class="drop-zone" id="teacher-drop-zone">
+                        <i data-lucide="cloud-upload"></i>
+                        <p>Drag & drop PDF here or click to browse</p>
+                        <input type="file" id="teacher-file" accept=".pdf" hidden>
+                    </div>
+                    <div class="file-info" id="teacher-file-info"></div>
+                </div>
+
+                <div class="config-grid">
+                    <div class="card config-card">
+                        <h3><i data-lucide="settings-2"></i> Configuration</h3>
+                        <div class="form-group">
+                            <label>MCQ Count</label>
+                            <select id="mcq-count" class="form-select">
+                                <option value="10">10 Questions</option>
+                                <option value="20">20 Questions</option>
+                                <option value="50">50 Questions</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Difficulty</label>
+                            <select id="difficulty" class="form-select">
+                                <option value="mixed">Mixed (Easy/Med/Hard)</option>
+                                <option value="easy">Easy</option>
+                                <option value="hard">Hard</option>
+                            </select>
+                        </div>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" checked id="inc-subjective"> Include Subjective Qs</label>
+                            <label><input type="checkbox" checked id="inc-keys"> Generate Answer Key</label>
+                        </div>
+                    </div>
+
+                    <div class="card action-card">
+                        <h3>Ready to Generate?</h3>
+                        <p>EduMind will extract topics, segment content, and create a structured worksheet.</p>
+                        <button class="btn-primary" onclick="generateWorksheet()">
+                            <i data-lucide="sparkles"></i> Generate Worksheet
+                        </button>
+                    </div>
+                </div>
+
+                <div id="teacher-results" class="results-area hidden">
+                    <h3>Generated Output</h3>
+                    <div class="results-grid">
+                        <div class="result-item">
+                            <i data-lucide="file-text"></i>
+                            <span>Worksheet.pdf</span>
+                            <button class="btn-sm">Download</button>
+                        </div>
+                        <div class="result-item">
+                            <i data-lucide="key"></i>
+                            <span>AnswerKey.pdf</span>
+                            <button class="btn-sm">Download</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Student Mode View -->
+            <div id="student-mode" class="mode-view hidden">
+                <div class="card upload-card">
+                    <h2><i data-lucide="book-open"></i> Start Learning Session</h2>
+                    <p>Upload your chapter to start an adaptive quiz session.</p>
+                    <div class="drop-zone" id="student-drop-zone">
+                        <i data-lucide="cloud-upload"></i>
+                        <p>Drag & drop PDF here or click to browse</p>
+                        <input type="file" id="student-file" accept=".pdf" hidden>
+                    </div>
+                    <div class="file-info" id="student-file-info"></div>
+                </div>
+
+                <div class="learning-dashboard hidden" id="student-dashboard">
+                    <div class="stats-row">
+                        <div class="stat-card">
+                            <span class="stat-label">Accuracy</span>
+                            <span class="stat-value" id="accuracy-score">0%</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-label">Questions Attempted</span>
+                            <span class="stat-value" id="questions-count">0</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-label">Weak Areas</span>
+                            <span class="stat-value warning" id="weak-areas-count">0</span>
+                        </div>
+                    </div>
+
+                    <div class="quiz-container card">
+                        <div class="quiz-header">
+                            <span class="badge">Adaptive Quiz</span>
+                            <span class="timer">10:00</span>
+                        </div>
+                        <div class="question-box">
+                            <p class="question-text">Question will appear here...</p>
+                            <div class="options-grid">
+                                <!-- Options injected via JS -->
+                            </div>
+                        </div>
+                        <div class="quiz-controls">
+                            <button class="btn-secondary" onclick="nextQuestion()">Skip</button>
+                            <button class="btn-primary" onclick="submitAnswer()">Submit</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="center-action" id="student-start-btn">
+                    <div class="card" style="max-width: 500px; margin: 0 auto;">
+                        <h3><i data-lucide="settings"></i> Configure Your Quiz</h3>
+                        <div class="form-group">
+                            <label>Number of Questions</label>
+                            <select id="quiz-num-questions" class="form-select">
+                                <option value="5">5 Questions</option>
+                                <option value="10" selected>10 Questions</option>
+                                <option value="15">15 Questions</option>
+                                <option value="20">20 Questions</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Difficulty Level</label>
+                            <select id="quiz-difficulty" class="form-select">
+                                <option value="Easy">Easy</option>
+                                <option value="Medium" selected>Medium</option>
+                                <option value="Hard">Hard</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Time Limit (minutes)</label>
+                            <select id="quiz-time-limit" class="form-select">
+                                <option value="5">5 Minutes</option>
+                                <option value="10" selected>10 Minutes</option>
+                                <option value="15">15 Minutes</option>
+                                <option value="20">20 Minutes</option>
+                                <option value="30">30 Minutes</option>
+                            </select>
+                        </div>
+                        <button class="btn-primary btn-lg" onclick="startStudentSession()"
+                            style="width: 100%; margin-top: 1rem;">
+                            <i data-lucide="play-circle"></i> Start Adaptive Quiz
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Chat Interface -->
+                <div id="student-chat" class="card chat-card hidden" style="margin-top: 2rem;">
+                    <h3><i data-lucide="message-circle"></i> Ask Your AI Tutor</h3>
+                    <div class="chat-window" id="chat-window">
+                        <div class="chat-message ai">
+                            <p>Hello! I've read your chapter. Ask me anything about it!</p>
+                        </div>
+                    </div>
+                    <div class="chat-input-area">
+                        <input type="text" id="chat-input" placeholder="Ask a question...">
+                        <button class="btn-primary" onclick="sendChatMessage()">
+                            <i data-lucide="send"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/static/js/main.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>

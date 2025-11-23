@@ -1,0 +1,99 @@
+/* Chat Interface */
+.chat-card {
+    display: flex;
+    flex-direction: column;
+    height: 600px; /* Taller */
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    background: linear-gradient(180deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
+}
+
+.chat-card h3 {
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 1rem;
+    color: var(--primary);
+}
+
+.chat-window {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: var(--radius-md);
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    scroll-behavior: smooth;
+}
+
+/* Scrollbar for chat */
+.chat-window::-webkit-scrollbar {
+    width: 6px;
+}
+.chat-window::-webkit-scrollbar-track {
+    background: transparent;
+}
+.chat-window::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 3px;
+}
+
+.chat-message {
+    max-width: 85%;
+    padding: 1rem 1.25rem;
+    border-radius: 1.25rem;
+    line-height: 1.6;
+    font-size: 1rem;
+    position: relative;
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.chat-message.ai {
+    background-color: rgba(30, 41, 59, 0.8);
+    border: 1px solid var(--border);
+    align-self: flex-start;
+    border-bottom-left-radius: 0.25rem;
+    color: var(--text-main);
+}
+
+.chat-message.user {
+    background: var(--gradient-primary);
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 0.25rem;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.chat-input-area {
+    display: flex;
+    gap: 1rem;
+    background: rgba(0,0,0,0.2);
+    padding: 0.5rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+}
+
+.chat-input-area input {
+    flex: 1;
+    padding: 1rem 1.5rem;
+    background-color: transparent;
+    border: none;
+    color: var(--text-main);
+    font-size: 1rem;
+}
+
+.chat-input-area input:focus {
+    outline: none;
+}
+
+.chat-input-area button {
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-md);
+    margin: 0.25rem;
+}

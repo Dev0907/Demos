@@ -1,0 +1,20 @@
+# Ignore config + secrets
+backend/config.py
+.env
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Temp folders
+temp/
+static/temp/
+backend/__pycache__/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Videos / PDFs (if you want to include them, remove these lines)
+*.mp4
+*.pdf
